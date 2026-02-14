@@ -20,10 +20,13 @@ COPY . .
 # 4. ដំឡើង Library
 RUN export COMPOSER_MEMORY_LIMIT=-1 && composer install --no-dev --optimize-autoloader --no-scripts --no-progress --prefer-dist
 
-# 5. ផ្តល់សិទ្ធិ
+# 5. លុប Cache ចាស់ដែលជាប់ពីកុំព្យូទ័រ (សំខាន់បំផុត!)
+RUN rm -f bootstrap/cache/*.php
+
+# 6. ផ្តល់សិទ្ធិ
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 EXPOSE 80
 
-# 6. (សំខាន់បំផុត) បញ្ជាឱ្យលុប Cache និង Run Migration រាល់ពេល Server ដើរ
-CMD bash -c "php artisan optimize:clear && php artisan config:clear && php artisan migrate --force && apache2-foreground"
+# 7. បញ្ជាឱ្យបង្កើត Config ថ្មី និង Run Migration
+CMD bash -c "php artisan config:cache && php artisan migrate --force && apache2-foreground"
