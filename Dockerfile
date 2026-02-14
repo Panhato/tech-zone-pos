@@ -1,13 +1,13 @@
 FROM php:8.2-apache
 
-# ដំឡើងកម្មវិធីចាំបាច់ និង MongoDB extension
+# ដំឡើងកម្មវិធីចាំបាច់ និង MongoDB extension (កន្លែងសំខាន់)
 RUN apt-get update && apt-get install -y \
     libzip-dev zip unzip git libpq-dev libcurl4-openssl-dev pkg-config libssl-dev \
     && pecl install mongodb \
     && docker-php-ext-enable mongodb \
     && docker-php-ext-install pdo pdo_pgsql zip
 
-# កំណត់ឱ្យ Apache ស្គាល់ folder public របស់ Laravel
+# កំណត់ឱ្យ Apache ស្គាល់ folder public
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
