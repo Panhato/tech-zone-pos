@@ -1,8 +1,10 @@
 FROM php:8.2-apache
 
-# ដំឡើងកម្មវិធីចាំបាច់
+# ដំឡើងកម្មវិធីចាំបាច់ និង MongoDB extension
 RUN apt-get update && apt-get install -y \
-    libzip-dev zip unzip git libpq-dev \
+    libzip-dev zip unzip git libpq-dev libcurl4-openssl-dev pkg-config libssl-dev \
+    && pecl install mongodb \
+    && docker-php-ext-enable mongodb \
     && docker-php-ext-install pdo pdo_pgsql zip
 
 # កំណត់ឱ្យ Apache ស្គាល់ folder public របស់ Laravel
@@ -22,7 +24,7 @@ COPY . .
 # ដំឡើង Library ទាំងអស់
 RUN composer install --no-dev --optimize-autoloader
 
-# ផ្តល់សិទ្ធិឱ្យ Folder storage (សំខាន់ណាស់)
+# ផ្តល់សិទ្ធិឱ្យ Folder storage
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 EXPOSE 80
