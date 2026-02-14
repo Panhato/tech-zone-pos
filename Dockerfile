@@ -17,8 +17,10 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www/html
 COPY . .
 
-# 4. ដំឡើង Library
-RUN export COMPOSER_MEMORY_LIMIT=-1 && composer install --no-dev --optimize-autoloader --no-scripts --no-progress --prefer-dist
+# 4. ដំឡើង Library (កែថ្មី៖ បំបែកជា ២ ជំហាន ដើម្បីសន្សំ RAM កុំឱ្យគាំង)
+RUN export COMPOSER_MEMORY_LIMIT=-1 \
+    && composer install --no-dev --no-scripts --no-progress --prefer-dist --no-autoloader \
+    && composer dump-autoload --optimize
 
 # 5. លុប Cache ចាស់ចោល
 RUN rm -f bootstrap/cache/*.php
@@ -28,5 +30,5 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 
 EXPOSE 80
 
-# 7. បញ្ជាឱ្យបង្កើត Link រូបភាព និង Run Server
+# 7. Start Server
 CMD bash -c "php artisan optimize:clear && php artisan migrate --force && php artisan storage:link && apache2-foreground"
