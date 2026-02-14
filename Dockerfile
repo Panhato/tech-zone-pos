@@ -1,4 +1,4 @@
-ខ«FROM php:8.2-apache
+FROM php:8.2-apache
 
 # 1. ដំឡើង Extension
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
@@ -28,5 +28,5 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 
 EXPOSE 80
 
-# 7. (កែថ្មី) បញ្ជាឱ្យលុប Cache រាល់ពេលបើក ដើម្បីឱ្យវាស្គាល់ Env Variable ថ្មីៗ
+# 7. បញ្ជាឱ្យបង្កើត Link រូបភាព និង Run Server
 CMD bash -c "php artisan optimize:clear && php artisan migrate --force && php artisan storage:link && apache2-foreground"
